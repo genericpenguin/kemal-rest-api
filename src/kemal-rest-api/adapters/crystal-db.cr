@@ -80,5 +80,19 @@ module KemalRestApi::Adapters
       end
       items
     end
+
+    def search(name : String)
+      items = [] of Hash(String, String)
+      DB.open @db_connection do |db|
+        db.query("SELECT * FROM #{@table_name} where name = ?", name) do |rs|
+          rs.each do
+            item = {} of String => String
+            rs.each_column { |col| item[col] = (val = rs.read) ? val.to_s : "" }
+            items.push item
+          end
+        end
+      end
+      items
+    end
   end
 end
