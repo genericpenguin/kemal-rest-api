@@ -81,7 +81,7 @@ module KemalRestApi::Adapters
       items
     end
 
-    def search(name : String)
+    def search(column : String, name : String)
       items = [] of Hash(String, String)
       DB.open @db_connection do |db|
         clean_column = column.gsub(/[^a-z_\-]+/, "")
