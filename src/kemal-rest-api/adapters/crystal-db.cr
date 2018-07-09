@@ -84,7 +84,8 @@ module KemalRestApi::Adapters
     def search(name : String)
       items = [] of Hash(String, String)
       DB.open @db_connection do |db|
-        db.query("SELECT * FROM #{@table_name} where name = ?", name) do |rs|
+        clean_column = column.gsub(/[^a-z_\-]+/, "")
+        db.query("SELECT * FROM #{@table_name} where #{clean_column} = ?", name) do |rs|
           rs.each do
             item = {} of String => String
             rs.each_column { |col| item[col] = (val = rs.read) ? val.to_s : "" }
